@@ -16,3 +16,4 @@ dbt_project/**/dbt_packages/
 # misc
 logs/
 .DS_Store
+cool*.txt
