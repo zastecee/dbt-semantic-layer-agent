@@ -1,0 +1,12 @@
+roaming_analytics:
+  outputs:
+    dev:
+      dbname: "{{ env_var('POSTGRES_DB', 'analytics') }}"
+      host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
+      pass: "{{ env_var('POSTGRES_PASSWORD', 'admin') }}"
+      port: "{{ env_var('POSTGRES_PORT', '5432') | as_number }}"
+      schema: public
+      threads: 4
+      type: postgres
+      user: "{{ env_var('POSTGRES_USER', 'admin') }}"
+  target: dev

@@ -1,0 +1,6 @@
+fastmcp>=2.3.0
+pandas>=2.2.0
+pyyaml>=6.0.1
+dbt-core>=1.8.0
+dbt-postgres>=1.8.0
+dbt-metricflow>=0.14.0

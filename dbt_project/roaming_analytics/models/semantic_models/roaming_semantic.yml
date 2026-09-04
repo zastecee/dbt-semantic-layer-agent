@@ -1,0 +1,54 @@
+semantic_models:
+  - name: roaming
+    description: "One row per national roaming event, exposing governed dimensions and measures."
+    model: ref('fct_roaming')
+
+    defaults:
+      agg_time_dimension: event_date
+
+    entities:
+      - name: roaming_event
+        type: primary
+        expr: roaming_event_id
+
+    dimensions:
+      - name: country
+        type: categorical
+        expr: country
+      - name: partner_network
+        type: categorical
+        expr: partner_network
+      - name: event_date
+        type: time
+        type_params:
+          time_granularity: day
+
+    measures:
+      - name: revenue
+        agg: sum
+        expr: revenue
+        description: "Total roaming revenue, in USD."
+      - name: duration
+        agg: sum
+        expr: duration
+        description: "Total roaming session/call duration, in minutes."
+      - name: total_mb
+        agg: sum
+        expr: total_mb
+        description: "Total roaming data usage, in megabytes."
+      - name: total_events
+        agg: count_distinct
+        expr: roaming_event_id
+        description: "Count of unique national roaming events."
+      - name: average_revenue
+        agg: average
+        expr: revenue
+        description: "Average revenue per national roaming event, in USD."
+      - name: average_duration
+        agg: average
+        expr: duration
+        description: "Average session/call duration per event, in minutes."
+      - name: average_usage
+        agg: average
+        expr: total_mb
+        description: "Average data usage per event, in megabytes."

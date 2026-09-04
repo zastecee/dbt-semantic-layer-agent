@@ -1,0 +1,85 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: dbt_agent_postgres
+
+    environment:
+      POSTGRES_DB: analytics
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sample_data:/docker-entrypoint-initdb.d
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d analytics"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mcp_server:
+    build:
+      context: .
+      dockerfile: mcp_server/Dockerfile
+    container_name: dbt_agent_mcp_server
+
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: analytics
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      MCP_SERVER_HOST: "0.0.0.0"
+      MCP_SERVER_PORT: "8000"
+
+    ports:
+      - "8000:8000"
+
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('localhost', 8000), 2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    container_name: dbt_agent_dashboard
+
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: analytics
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      AWS_REGION: "${AWS_REGION:-}"
+      AWS_PROFILE: "${AWS_PROFILE:-}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-}"
+      AWS_SESSION_TOKEN: "${AWS_SESSION_TOKEN:-}"
+      BEDROCK_MODEL_ID: "${BEDROCK_MODEL_ID:-}"
+
+    volumes:
+      - ${HOME}/.aws:/root/.aws:ro
+
+    ports:
+      - "8501:8501"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mcp_server:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

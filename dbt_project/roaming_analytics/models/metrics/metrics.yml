@@ -1,0 +1,138 @@
+metrics:
+  - name: total_revenue
+    type: simple
+    label: "Total Revenue"
+    description: "Total national roaming revenue, in USD."
+    type_params:
+      measure:
+        name: revenue
+
+  - name: total_usage
+    type: simple
+    label: "Total Data Usage"
+    description: "Total national roaming data usage, in megabytes."
+    type_params:
+      measure:
+        name: total_mb
+
+  - name: total_duration
+    type: simple
+    label: "Total Duration"
+    description: "Total national roaming session/call duration, in minutes."
+    type_params:
+      measure:
+        name: duration
+
+  - name: total_events
+    type: simple
+    label: "Total Roaming Events"
+    description: "Count of unique national roaming events."
+    type_params:
+      measure:
+        name: total_events
+
+  - name: average_revenue
+    type: simple
+    label: "Average Revenue per Event"
+    description: "Average revenue per national roaming event, in USD."
+    type_params:
+      measure:
+        name: average_revenue
+
+  - name: average_duration
+    type: simple
+    label: "Average Duration per Event"
+    description: "Average session/call duration per event, in minutes."
+    type_params:
+      measure:
+        name: average_duration
+
+  - name: average_usage
+    type: simple
+    label: "Average Data Usage per Event"
+    description: "Average data usage per national roaming event, in megabytes."
+    type_params:
+      measure:
+        name: average_usage
+
+  - name: revenue_per_event
+    type: ratio
+    label: "Revenue per Event"
+    description: "Total revenue divided by the number of roaming events."
+    type_params:
+      numerator: total_revenue
+      denominator: total_events
+
+  - name: usage_per_event
+    type: ratio
+    label: "Data Usage per Event"
+    description: "Total data usage divided by the number of roaming events."
+    type_params:
+      numerator: total_usage
+      denominator: total_events
+
+  - name: revenue_mtd
+    type: cumulative
+    label: "Revenue MTD"
+    description: "Revenue accumulated from the beginning of the month."
+    type_params:
+      measure: revenue
+      cumulative_type_params:
+        grain_to_date: month
+
+  - name: revenue_ytd
+    type: cumulative
+    label: "Revenue YTD"
+    description: "Revenue accumulated from the beginning of the year."
+    type_params:
+      measure: revenue
+      cumulative_type_params:
+        grain_to_date: year
+
+  - name: revenue_mom_pct
+    type: derived
+    label: "Revenue MoM Change (%)"
+    description: "Percentage change in revenue compared with the previous month."
+    expr: (current_revenue - previous_revenue) / previous_revenue * 100
+    input_metrics:
+      - name: total_revenue
+        alias: current_revenue
+      - name: total_revenue
+        alias: previous_revenue
+        offset_window: 1 month
+
+  - name: revenue_mom_change
+    type: derived
+    label: "Revenue MoM Change"
+    description: "Absolute change in revenue compared with the previous month."
+    expr: current_revenue - previous_revenue
+    input_metrics:
+      - name: total_revenue
+        alias: current_revenue
+      - name: total_revenue
+        alias: previous_revenue
+        offset_window: 1 month
+
+  - name: revenue_yoy_pct
+    type: derived
+    label: "Revenue YoY Change (%)"
+    description: "Percentage change in revenue compared with the same period last year."
+    expr: (current_revenue - previous_revenue) / previous_revenue * 100
+    input_metrics:
+      - name: total_revenue
+        alias: current_revenue
+      - name: total_revenue
+        alias: previous_revenue
+        offset_window: 1 year
+
+  - name: revenue_yoy_change
+    type: derived
+    label: "Revenue YoY Change"
+    description: "Absolute change in revenue compared with the same period last year."
+    expr: current_revenue - previous_revenue
+    input_metrics:
+      - name: total_revenue
+        alias: current_revenue
+      - name: total_revenue
+        alias: previous_revenue
+        offset_window: 1 year

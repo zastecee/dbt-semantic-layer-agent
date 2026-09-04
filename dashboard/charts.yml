@@ -1,0 +1,24 @@
+charts:
+  - title: Revenue by Country (last 6 months)
+    type: bar
+    metric: total_revenue
+    dimensions: [country]
+    x: country
+    y: total_revenue
+    start_days_ago: 180
+    limit: 100
+  - title: Top 10 Roaming Partners by Revenue
+    type: bar
+    metric: total_revenue
+    dimensions: [partner_network]
+    x: partner_network
+    y: total_revenue
+    limit: 10
+  - title: Revenue Trend Over Time
+    type: line
+    metric: total_revenue
+    dimensions: [event_date]
+    granularity: day
+    x: event_date
+    y: total_revenue
+    limit: 1000

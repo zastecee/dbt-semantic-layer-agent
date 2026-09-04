@@ -1,0 +1,4 @@
+metrics:
+  - total_revenue
+  - total_usage
+  - total_duration
