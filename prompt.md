@@ -20,6 +20,7 @@ The SemanticLayerClient must:
 The MCP server must expose the following tools.
 
 
+
 health_check()
 
 Purpose:
